@@ -49,16 +49,17 @@ void fillEditDistance(std::vector<std::vector<int>> *matrix, std::string init, s
 				
 				if(matrix->at(i-1).at(j-1) + k < temp.back())
 				{
-					temp.pop_back();						   // k = 1 rep
-					temp.push_back(matrix->at(i-1).at(j-1)+k); // k = 0 skp
+					temp.pop_back();							// k = 1 rep
+					temp.push_back(matrix->at(i-1).at(j-1)+k);	// k = 0 skp
 				}
 				
 				// twiddle
-				if(twiddle && k == 1)
+				if(twiddle) // && k == 1)
 				{
-					if (i < init.size() && j < target.size())
+					if (i <= init.size() && j <= target.size() && i > 1 && j > 1)
 					{
-						if(init.at(i-1) == target.at(j) && init.at(i) == target.at(j-1))
+						// remember that index 0 is the empty word, so our word starts at index 1
+						if(init.at(i-2) == target.at(j-1) && init.at(i-1) == target.at(j-2))
 						{
 							temp.pop_back();
 							temp.push_back(matrix->at(i-1).at(j-1));

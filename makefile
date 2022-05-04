@@ -10,8 +10,7 @@ else
 endif
 
 prog: main.o terminal_ui.o editdistance.o elementOps.o stringConstructor.o
-	$(COMPILER) main.o terminal_ui.o editdistance.o elementOps.o stringConstructor.o
-	-o EditDistance$(EXTENSION)
+	$(COMPILER) main.o terminal_ui.o editdistance.o elementOps.o stringConstructor.o -o EditDistance$(EXTENSION)
 
 main.o: main.cpp terminal_ui.o editdistance.o stringConstructor.o
 	$(COMPILER) $(ARG) main.cpp
