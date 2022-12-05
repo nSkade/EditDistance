@@ -4,6 +4,8 @@
 // #define COST_REPLACE    1
 // #define COST_TWIDDLE    1
 // #define COST_KILL       1
+#include <vector>
+#include <string>
 
 /**
  * fill 2-dim vactor int with highest column index
@@ -23,7 +25,7 @@ int getMinEditDistance(std::vector<std::vector<int>> matrix);
  * fills out 2x2 vector matrix with edit distance algorithm
  * @param twiddle (if true twiddle is included)
  */
-void fillEditDistance(std::vector<std::vector<int>> *matix, std::string init, std::string target, bool twiddle);
+void fillEditDistance(std::vector<std::vector<int>>& matix, std::string init, std::string target, bool twiddle);
 
 /**
  * backtrace from https://de.wikipedia.org/wiki/Levenshtein-Distanz gives back operations in string numbers from 0 to 4

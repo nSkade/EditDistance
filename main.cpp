@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	std::string initWord(argv[1]);
 	std::string goalWord(argv[2]);
 
-	std::vector<std::vector<int>> editDistanceMatrix;
+	std::vector<std::vector<int>> editDistanceMatrix(initWord.size()+1,std::vector<int>(goalWord.size()));
 
 	// fill matrix
 	createMatrix(&editDistanceMatrix, initWord.size(), goalWord.size());
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 	//printEditDistance(editDistanceMatrix, initWord, goalWord);
 
 	// calculate edit distance
-	fillEditDistance(&editDistanceMatrix, initWord, goalWord, true);
+	fillEditDistance(editDistanceMatrix, initWord, goalWord, true);
 
 	// print calculated matrix
 	printf("\ncalculated Matrix:\n\n");
