@@ -14,15 +14,13 @@ int main(int argc, char* argv[])
 	std::string initWord(argv[1]);
 	std::string goalWord(argv[2]);
 
-	std::vector<std::vector<int>> editDistanceMatrix(initWord.size()+1,std::vector<int>(goalWord.size()));
-
-	// fill matrix
+	std::vector<std::vector<int>> editDistanceMatrix;
+	
+	// fills matrix with zeros and initializes empty row/col
 	createMatrix(&editDistanceMatrix, initWord.size(), goalWord.size());
-	//printf("\nfilled Matrix:\n\n");
-	//printEditDistance(editDistanceMatrix, initWord, goalWord);
 
 	// calculate edit distance
-	fillEditDistance(editDistanceMatrix, initWord, goalWord, true);
+	fillEditDistance(&editDistanceMatrix, initWord, goalWord, true);
 
 	// print calculated matrix
 	printf("\ncalculated Matrix:\n\n");
