@@ -22,6 +22,9 @@ int main(int argc, char* argv[])
 	// calculate edit distance
 	fillEditDistance(&editDistanceMatrix, initWord, goalWord, true);
 
+	// correct Matrix for kill operation
+	applyKill(&editDistanceMatrix, initWord, goalWord);
+
 	// print calculated matrix
 	printf("\ncalculated Matrix:\n\n");
 	printEditDistance(editDistanceMatrix, initWord, goalWord);

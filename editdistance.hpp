@@ -39,6 +39,6 @@ std::string backtrace(int i, int j, std::vector<std::vector<int>> matrix, bool d
 std::string backtraceTwd(int i, int j, std::vector<std::vector<int>> matrix, std::string init, std::string target, bool debug);
 
 /**
- * inserts a KILL if target ends with more than one delete
+ * finds optimal cutoff for Kill and corrects Matrix
  */
-void detectKill(std::string *operations);
+void applyKill(std::vector<std::vector<int>>* matrix, std::string init, std::string target);
