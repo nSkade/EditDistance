@@ -15,7 +15,5 @@ This was done for an assignment in 2020 and used to learn basics of C++.
 
 ## TODO
 * put functions in a class/library
-* optimise code and check for conventions
 * add guards
 * custiom operation costs
-* fix kill
