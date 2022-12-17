@@ -1,11 +1,14 @@
+#include <string>
+
 enum OPERATIONS
 {
-    SKIP = 0,
-    DELETE,
-    INSERT,
-    REPLACE,
-    TWIDDLE,
-    KILL
+	SKIP = 0,
+	DELETE,
+	INSERT,
+	REPLACE,
+	TWIDDLE,
+	KILL,
+	OPERATION_AMOUNT
 };
 
 /**

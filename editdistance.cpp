@@ -1,12 +1,12 @@
 #include "editdistance.hpp"
-#include "elementOps.hpp"
 
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cstring>
+#include <iostream>
 
-//TODO
-void createMatrix(std::vector<std::vector<int>>* matrix, int initSize, int goalSize)
+void ED::createMatrix(std::vector<std::vector<int>>* matrix, int initSize, int goalSize)
 {
 	(*matrix) = std::vector<std::vector<int>>(initSize+1,std::vector<int>(goalSize+1,0));
 	for(int i = 0; i < initSize+1; i++)
@@ -21,10 +21,7 @@ void createMatrix(std::vector<std::vector<int>>* matrix, int initSize, int goalS
 		}
 	}
 }
-
-// TODO Add comments cleanup
-// TODO change *matrix to &matrix
-void fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, std::string target, bool twiddle)
+void ED::fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, std::string target, bool twiddle)
 {
 	int k = 0;
 	for(int i = 0; i < (*matrix).size(); i++) {
@@ -35,14 +32,14 @@ void fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, s
 			if(j == 0) {
 				continue;
 			}
-			(*matrix)[i][j] = (*matrix)[i-1][j]+1; // del
+			(*matrix)[i][j] = (*matrix)[i-1][j]+cost[DELETE]; // del
 
 			if((*matrix)[i][j-1] + 1 < (*matrix)[i][j]) {
-				(*matrix)[i][j] = (*matrix)[i][j-1] + 1; //ins
+				(*matrix)[i][j] = (*matrix)[i][j-1] + cost[INSERT]; //ins
 			}
 			
-			if(init.at(i-1) == target.at(j-1)) k = 0;
-			else k = 1;
+			if(init.at(i-1) == target.at(j-1)) k = cost[SKIP];
+			else k = cost[REPLACE];
 			
 			if((*matrix)[i-1][j-1] + k < (*matrix)[i][j]) {
 				// k = 1 rep // k = 0 skp
@@ -50,12 +47,12 @@ void fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, s
 			}
 			
 			// twiddle
-			if(twiddle && (*matrix)[i-2][j-2]+1 < (*matrix)[i][j]) {
-				if (i <= init.size() && j <= target.size() && i > 1 && j > 1) {
+			if (twiddle && i <= init.size() && j <= target.size() && i > 1 && j > 1) {
+				if((*matrix)[i-2][j-2]+cost[TWIDDLE] < (*matrix)[i][j]) {
 					// remember that index 0 is the empty word, so our word starts at index 1
 					if(init.at(i-2) == target.at(j-1) && init.at(i-1) == target.at(j-2)) {
 						//TODO check for cost
-						(*matrix)[i][j] = (*matrix)[i-2][j-2]+1;
+						(*matrix)[i][j] = (*matrix)[i-2][j-2]+cost[TWIDDLE];
 					}
 				}
 			}
@@ -63,7 +60,7 @@ void fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, s
 	}
 }
 
-int getMinEditDistance(std::vector<std::vector<int>> matrix)
+int ED::getMinEditDistance(std::vector<std::vector<int>> matrix)
 {
 	int i = matrix.size();
 	int j = matrix[i-1].size();
@@ -71,22 +68,22 @@ int getMinEditDistance(std::vector<std::vector<int>> matrix)
 	return matrix[i-1][j-1];
 }
 
-std::string backtrace(int i, int j, std::vector<std::vector<int>> matrix, bool debug)
+std::string ED::backtrace(int i, int j, std::vector<std::vector<int>> matrix, bool debug)
 {
-	if (i>0 && matrix[i-1][j] + 1 == matrix[i][j])
+	if (i>0 && matrix[i-1][j] + cost[DELETE] == matrix[i][j])
 		return backtrace(i-1, j, matrix, debug) + (debug ? " del " : std::string(1, char(DELETE)));
-	if (j>0 && matrix[i][j-1] + 1 == matrix[i][j])
+	if (j>0 && matrix[i][j-1] + cost[INSERT] == matrix[i][j])
 		return backtrace(i, j-1, matrix, debug) + (debug ? " ins " : std::string(1, char(INSERT)));
-	if (i>0 && j>0 && matrix[i-1][j-1] + 1 == matrix[i][j])
+	if (i>0 && j>0 && matrix[i-1][j-1] + cost[REPLACE] == matrix[i][j])
 		return backtrace(i-1, j-1, matrix, debug) + (debug ? " rep " : std::string(1, char(REPLACE)));
-	if (i>0 && j>0 && matrix[i-1][j-1]  == matrix[i][j])
+	if (i>0 && j>0 && matrix[i-1][j-1] + cost[SKIP] == matrix[i][j])
 		return backtrace(i-1, j-1, matrix, debug) + (debug ? " skp " : std::string(1, char(SKIP)));
 	return "";
 }
 
-std::string backtraceTwd(int i, int j, std::vector<std::vector<int>> matrix, std::string init, std::string target, bool debug)
+std::string ED::backtraceTwd(int i, int j, std::vector<std::vector<int>> matrix, std::string init, std::string target, bool debug)
 {
-	if(i > 1 && j > 1 && matrix[i-2][j-2]+1 == matrix[i][j]) {
+	if(i > 1 && j > 1 && matrix[i-2][j-2]+cost[TWIDDLE] == matrix[i][j]) {
 		int initIdx = i-1;
 		int targetIdx = j-1;
 		bool isTwiddle = init.at(initIdx-1) == target.at(targetIdx) && init.at(initIdx) == target.at(targetIdx-1);
@@ -96,25 +93,24 @@ std::string backtraceTwd(int i, int j, std::vector<std::vector<int>> matrix, std
 		}
 	}
 
-	//TODO make string of operations to int of operations
-	if (i>0 && matrix[i-1][j] + 1 == matrix[i][j])
+	if (i>0 && matrix[i-1][j] + cost[DELETE] == matrix[i][j])
 		return backtraceTwd(i-1, j, matrix, init, target, debug) + (debug ? " del " : std::string(1, char(DELETE)));
-	if (j>0 && matrix[i][j-1] + 1 == matrix[i][j])
+	if (j>0 && matrix[i][j-1] + cost[INSERT] == matrix[i][j])
 		return backtraceTwd(i, j-1, matrix, init, target, debug) + (debug ? " ins " : std::string(1, char(INSERT)));
-	if (i>0 && j>0 && matrix[i-1][j-1] + 1 == matrix[i][j])
+	if (i>0 && j>0 && matrix[i-1][j-1] + cost[REPLACE] == matrix[i][j])
 		return backtraceTwd(i-1, j-1, matrix, init, target, debug) + (debug ? " rep " : std::string(1, char(REPLACE)));
 	if (i>0 && matrix[i][j] == matrix[i-1][j] && i == init.size() && j == target.size()) {
 		//find cut off
-		while (matrix[i][j] != matrix[i-1][j]+1)
+		while (matrix[i][j] != matrix[i-1][j]+cost[KILL])
 			i--;
 		return backtraceTwd(i-1, j, matrix, init, target, debug) + (debug ? " kil " : std::string(1,char(KILL)));
 	}
-	if (i>0 && j>0 && matrix[i-1][j-1]  == matrix[i][j])
+	if (i>0 && j>0 && matrix[i-1][j-1] + cost[SKIP] == matrix[i][j])
 		return backtraceTwd(i-1, j-1, matrix, init, target, debug) + (debug ? " skp " : std::string(1, char(SKIP)));
 	return "";
 }
 
-void applyKill(std::vector<std::vector<int>>* matrix, std::string init, std::string target) {
+void ED::applyKill(std::vector<std::vector<int>>* matrix, std::string init, std::string target) {
 	// https://github.com/phillco/Algorithms/blob/master/src/algorithms/AdvancedEditDistance.groovy
 	// find cheapest cut-off for Kill
 	uint32_t lowIdx = 1;
@@ -123,5 +119,10 @@ void applyKill(std::vector<std::vector<int>>* matrix, std::string init, std::str
 		if ((*matrix)[i][tl] < (*matrix)[lowIdx][tl])
 			lowIdx = i;
 	}
-	(*matrix)[init.size()][tl] = std::min(1+(*matrix)[lowIdx][tl], (*matrix)[init.size()][tl]);
+	for (uint32_t i=1;i<=init.size();++i)
+		(*matrix)[i][tl] = std::min((*matrix)[lowIdx][tl]+int(cost[KILL]), (*matrix)[i][tl]);
+}
+
+void ED::setCost(uint32_t cost[OPERATION_AMOUNT]) {
+	memcpy(this->cost,cost,OPERATION_AMOUNT*sizeof(cost[0]));
 }

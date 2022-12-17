@@ -10,38 +10,40 @@
 int main(int argc, char* argv[])
 {
 	if(argc < 3) return -1;
+	ED ed;
+	uint32_t cost[OPERATION_AMOUNT] = {1,1,1,1,1,1};
+	ed.setCost(cost);
+	std::cout << ed.cost[0] << "\n";
 
 	std::string initWord(argv[1]);
 	std::string goalWord(argv[2]);
 
 	std::vector<std::vector<int>> editDistanceMatrix;
-	
+
 	// fills matrix with zeros and initializes empty row/col
-	createMatrix(&editDistanceMatrix, initWord.size(), goalWord.size());
+	ed.createMatrix(&editDistanceMatrix, initWord.size(), goalWord.size());
 
 	// calculate edit distance
-	fillEditDistance(&editDistanceMatrix, initWord, goalWord, true);
+	ed.fillEditDistance(&editDistanceMatrix, initWord, goalWord, true);
 
 	// correct Matrix for kill operation
-	applyKill(&editDistanceMatrix, initWord, goalWord);
+	ed.applyKill(&editDistanceMatrix, initWord, goalWord);
 
 	// print calculated matrix
 	printf("\ncalculated Matrix:\n\n");
 	printEditDistance(editDistanceMatrix, initWord, goalWord);
 
-	printf("\nMinimal Edit Distance: %d\n", getMinEditDistance(editDistanceMatrix));
+	printf("\nMinimal Edit Distance: %d\n", ed.getMinEditDistance(editDistanceMatrix));
 
 	//
 	// print backtrace results
 	//
 	
-	printf("\ndebug Operations:\n%s\n", backtraceTwd(editDistanceMatrix.size()-1, editDistanceMatrix.at(0).size()-1, editDistanceMatrix, initWord, goalWord, true).c_str());
+	printf("\ndebug Operations:\n%s\n", ed.backtraceTwd(editDistanceMatrix.size()-1, editDistanceMatrix.at(0).size()-1, editDistanceMatrix, initWord, goalWord, true).c_str());
 
-	std::string operations = backtraceTwd(editDistanceMatrix.size()-1, editDistanceMatrix.at(0).size()-1, editDistanceMatrix, initWord, goalWord, false);
+	std::string operations = ed.backtraceTwd(editDistanceMatrix.size()-1, editDistanceMatrix.at(0).size()-1, editDistanceMatrix, initWord, goalWord, false);
 
 	printOperations(operations);
-	// detectKill(&operations);
-	// printOperations(operations);
 
 	std::string iterations("");
 	std::string transition("");
