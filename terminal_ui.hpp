@@ -37,3 +37,9 @@ void printEditDistance(std::vector<std::vector<int>> matrix, std::string init, s
  * @param operations (operations in non debug format)
  */
 void printOperations(std::string operations);
+
+/**
+ * prints real operations in debug format
+ * @param operations (operations in non debug format)
+ */
+void printOpW(std::string operations);

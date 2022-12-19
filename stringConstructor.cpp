@@ -15,39 +15,39 @@ void changeExistingStr(std::string *init, std::string target, std::string operat
 	{
 		switch(operations[i])
 		{
-			case SKIP:
+			case ED_SKIP:
 				{
 					initIdx++;
 					targetIdx++;
 					break;
 				}
-			case DELETE:
+			case ED_DELETE:
 				{
 					Delete(init, initIdx);
 					break;
 				}
-			case INSERT:
+			case ED_INSERT:
 				{
 					Insert(init, initIdx, target.at(targetIdx));
 					initIdx++;
 					targetIdx++;
 					break;
 				}
-			case REPLACE:
+			case ED_REPLACE:
 				{
 					Replace(init, initIdx, target.at(targetIdx));
 					initIdx++;
 					targetIdx++;
 					break;
 				}
-			case TWIDDLE:
+			case ED_TWIDDLE:
 				{
 					Twiddle(init, initIdx);
 					initIdx += 2;
 					targetIdx += 2;
 					break;
 				}
-			case KILL:
+			case ED_KILL:
 				{
 					Kill(init, initIdx);
 					i = operations.size();
@@ -75,7 +75,7 @@ std::string createNewStr(std::string init, std::string target, std::string opera
 	{
 		switch(operations[i])
 		{
-			case SKIP:
+			case ED_SKIP:
 				{
 					// we need to copy the old string if we want to create a word from scratch
 					Copy(&result, resultIdx, init, initIdx);
@@ -84,19 +84,19 @@ std::string createNewStr(std::string init, std::string target, std::string opera
 					targetIdx++;
 					break;
 				}
-			case DELETE:
+			case ED_DELETE:
 				{
 					initIdx++;
 					break;
 				}
-			case INSERT:
+			case ED_INSERT:
 				{
 					Insert(&result, resultIdx, target.at(targetIdx));
 					targetIdx++;
 					resultIdx++;
 					break;
 				}
-			case REPLACE:
+			case ED_REPLACE:
 				{
 					Replace(&result, resultIdx, target.at(targetIdx));
 					initIdx++;
@@ -104,7 +104,7 @@ std::string createNewStr(std::string init, std::string target, std::string opera
 					targetIdx++;
 					break;
 				}
-			case TWIDDLE:
+			case ED_TWIDDLE:
 				{
 					Copy(&result, resultIdx, init, initIdx+1);
 					Copy(&result, resultIdx+1, init, initIdx);
@@ -113,7 +113,7 @@ std::string createNewStr(std::string init, std::string target, std::string opera
 					resultIdx += 2;
 					break;
 				}
-			case KILL:
+			case ED_KILL:
 				{
 					i = operations.size();
 					break;

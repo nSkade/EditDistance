@@ -11,9 +11,8 @@ int main(int argc, char* argv[])
 {
 	if(argc < 3) return -1;
 	ED ed;
-	uint32_t cost[OPERATION_AMOUNT] = {1,1,1,1,1,1};
+	uint32_t cost[OPERATION_AMOUNT] = {0,1,1,1,1,1};
 	ed.setCost(cost);
-	std::cout << ed.cost[0] << "\n";
 
 	std::string initWord(argv[1]);
 	std::string goalWord(argv[2]);

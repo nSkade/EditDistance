@@ -1,13 +1,13 @@
 #include <string>
 
-enum OPERATIONS
+enum ED_OP
 {
-	SKIP = 0,
-	DELETE,
-	INSERT,
-	REPLACE,
-	TWIDDLE,
-	KILL,
+	ED_SKIP = 0,
+	ED_DELETE,
+	ED_INSERT,
+	ED_REPLACE,
+	ED_TWIDDLE,
+	ED_KILL,
 	OPERATION_AMOUNT
 };
 

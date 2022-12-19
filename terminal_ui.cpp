@@ -82,3 +82,32 @@ void printOperations(std::string operations)
 	}
 	printf("\n");
 }
+
+
+#include "elementOps.hpp"
+#define DUMP(a) std::cout << " " << #a << " ";
+
+void printOpW(std::string operations)
+{
+	printf("operations: ");
+	for(int i = 0; i < operations.size(); i++)
+	{
+		switch (operations[i])
+		{
+		case ED_SKIP: DUMP(ED_SKIP);
+			continue;
+		case ED_DELETE: DUMP(ED_DELETE);
+			continue;
+		case ED_INSERT: DUMP(ED_INSERT);
+			continue;
+		case ED_REPLACE: DUMP(ED_REPLACE);
+			continue;
+		case ED_TWIDDLE: DUMP(ED_TWIDDLE);
+			continue;
+		case ED_KILL: DUMP(ED_KILL);
+			continue;
+		default: continue;
+		}
+	}
+	printf("\n");
+}
