@@ -50,8 +50,8 @@ void fillEditDistance(std::vector<std::vector<int>>* matrix, std::string init, s
 			}
 			
 			// twiddle
-			if(twiddle && (*matrix)[i-2][j-2]+1 < (*matrix)[i][j]) {
-				if (i <= init.size() && j <= target.size() && i > 1 && j > 1) {
+			if (twiddle && i <= init.size() && j <= target.size() && i > 1 && j > 1) {
+				if((*matrix)[i-2][j-2]+1 < (*matrix)[i][j]) {
 					// remember that index 0 is the empty word, so our word starts at index 1
 					if(init.at(i-2) == target.at(j-1) && init.at(i-1) == target.at(j-2)) {
 						//TODO check for cost
@@ -105,7 +105,7 @@ std::string backtraceTwd(int i, int j, std::vector<std::vector<int>> matrix, std
 		return backtraceTwd(i-1, j-1, matrix, init, target, debug) + (debug ? " rep " : std::string(1, char(REPLACE)));
 	if (i>0 && matrix[i][j] == matrix[i-1][j] && i == init.size() && j == target.size()) {
 		//find cut off
-		while (matrix[i][j] != matrix[i-1][j]+1)
+		while (i>1 && matrix[i][j] != matrix[i-1][j]+1)
 			i--;
 		return backtraceTwd(i-1, j, matrix, init, target, debug) + (debug ? " kil " : std::string(1,char(KILL)));
 	}
@@ -123,5 +123,6 @@ void applyKill(std::vector<std::vector<int>>* matrix, std::string init, std::str
 		if ((*matrix)[i][tl] < (*matrix)[lowIdx][tl])
 			lowIdx = i;
 	}
-	(*matrix)[init.size()][tl] = std::min(1+(*matrix)[lowIdx][tl], (*matrix)[init.size()][tl]);
+	for (uint32_t i=lowIdx+1;i<=init.size();++i)
+		(*matrix)[i][tl] = std::min(1+(*matrix)[lowIdx][tl], (*matrix)[i][tl]);
 }
